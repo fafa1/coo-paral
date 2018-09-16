@@ -9,16 +9,18 @@ var x = d3.scale.ordinal().rangePoints([0, width], 1),
 var line = d3.svg.line(),
     axis = d3.svg.axis().orient("left"),
     background,
-    foreground
+    foreground,
+    svg
 
 var color = d3.scale.category10();
 
-var svg1 = d3.select("#super").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
+svg = d3.select("body").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 d3.csv("data.csv", function(error, data) {
 
@@ -30,7 +32,7 @@ d3.csv("data.csv", function(error, data) {
   }));
 
   // Add grey background lines for context.
-  background = svg1.append("g")
+  background = svg.append("g")
       .attr("class", "background")
     .selectAll("path")
       .data(data)
@@ -38,7 +40,7 @@ d3.csv("data.csv", function(error, data) {
       .attr("d", path);
 
   // Add blue foreground lines for focus.
-  foreground = svg1.append("g")
+  foreground = svg.append("g")
       .attr("class", "foreground")
       .selectAll("path")
       .data(data)
@@ -48,8 +50,8 @@ d3.csv("data.csv", function(error, data) {
       }}) 
       .attr("d", path);
 
-  // Adciona um grupo de elementos para cada dimensão
-  var g = svg1.selectAll(".dimension")
+  // Add a group element for each dimension.
+  var g = svg.selectAll(".dimension")
       .data(dimensions)
       .enter().append("g")
       .attr("class", "dimension")
@@ -84,7 +86,6 @@ d3.csv("data.csv", function(error, data) {
       .attr("class", "axis")
       .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
       .append("text")
-      .style('fill', 'black')
       .style("text-anchor", "middle")
       .attr("y", -9)
       .text(function(d) { return d; });
